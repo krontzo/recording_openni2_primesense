@@ -1,4 +1,5 @@
 #include <viewer.h>
+#include <iomanip>
 
 /**
   * Creates the timestamped directory structure to save the data.
@@ -127,7 +128,7 @@ void Viewer::saveToDisk(){
         if (save_depth && (!save_yml || save_both_depth)){
             fileNameDepthI = folder_name + "/depth" + "/png" + "/" + ss.str() + ".png";
             std::vector<int> params;
-            params.push_back( CV_IMWRITE_PNG_COMPRESSION );
+            params.push_back(cv::IMWRITE_PNG_COMPRESSION);
             params.push_back( 0 );
             cv::imwrite(fileNameDepthI, raw_depth[i], params);
         }

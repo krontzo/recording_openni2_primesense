@@ -1,6 +1,13 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
 project (tools_openni2) 
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories( ${PROJECT_SOURCE_DIR}/include )
 
@@ -28,12 +35,14 @@ find_package(OpenNI2 REQUIRED)
 include_directories( ${OPENNI2_INCLUDE_DIRS} )
 add_definitions(${OPENNI2_DEFINITIONS})
 
-# QT4 required
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
+# # QT4 required
+# find_package(Qt4 REQUIRED)
+# include(${QT_USE_FILE})
+# add_definitions(${QT_DEFINITIONS})
+# 
+# message("\n\nFound QT4\n\n")
 
-message("\n\nFound QT4\n\n")
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -59,16 +68,16 @@ SET(QT_HEADERS include/sliders.h)
 SET(QT_FORMS ui/sliders.ui)
 
 # create moc for QT
-QT4_WRAP_CPP(QT_MOC ${QT_HEADERS})
+#QT4_WRAP_CPP(QT_MOC ${QT_HEADERS})
 
 # process ui
-QT4_WRAP_UI(QT_FORMS_HEADERS ${QT_FORMS})
+#QT4_WRAP_UI(QT_FORMS_HEADERS ${QT_FORMS})
 
 ADD_EXECUTABLE(viewer ${VIEWER_SOURCES} 
     ${QT_MOC} 
     ${QT_FORMS})
 
 
-TARGET_LINK_LIBRARIES(viewer ${QT_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS} ${OPENNI2_LIBRARIES})
+TARGET_LINK_LIBRARIES(viewer Qt5::Widgets ${PCL_LIBRARIES} ${OpenCV_LIBS} ${OPENNI2_LIBRARIES})
 
 

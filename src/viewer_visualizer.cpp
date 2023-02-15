@@ -28,7 +28,7 @@ int Viewer::loop(){
                     frame.create(colorFrame.getHeight(), colorFrame.getWidth(), CV_8UC3);
                     memcpy( frame.data, imageBuffer, 3*colorFrame.getHeight()*colorFrame.getWidth()*sizeof(uint8_t) );
                     cv::flip(frame,frame,1);
-                    cv::cvtColor(frame,bgrMat,CV_RGB2BGR);
+                    cv::cvtColor(frame,bgrMat, cv::COLOR_RGB2BGR);
                     cv::imshow("Color", bgrMat);
                 }
 
@@ -39,7 +39,7 @@ int Viewer::loop(){
                 }
 
                 //normalize and show depth data
-                cv::normalize(depth_thresh, normDepth, 0, 255, CV_MINMAX, CV_8UC1);
+                cv::normalize(depth_thresh, normDepth, 0, 255, cv::NORM_MINMAX, CV_8UC1);
                 cv::imshow("Depth", normDepth);
 
                 if (saveMemory){
