@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-project (tools_openni2) 
+project (tools_openni2)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories( ${PROJECT_SOURCE_DIR}/include )
+include_directories( ${PROJECT_SOURCE_DIR}/src )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
@@ -35,14 +35,7 @@ find_package(OpenNI2 REQUIRED)
 include_directories( ${OPENNI2_INCLUDE_DIRS} )
 add_definitions(${OPENNI2_DEFINITIONS})
 
-# # QT4 required
-# find_package(Qt4 REQUIRED)
-# include(${QT_USE_FILE})
-# add_definitions(${QT_DEFINITIONS})
-# 
-# message("\n\nFound QT4\n\n")
-
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -50,7 +43,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # set the sources needed
-set( VIEWER_SOURCES   
+set( VIEWER_SOURCES
                 src/main.cpp
 		src/viewer.cpp
                 src/viewer_error.cpp
@@ -65,7 +58,7 @@ set( VIEWER_SOURCES
 SET(QT_HEADERS include/sliders.h)
 
 #set QT forms
-SET(QT_FORMS ui/sliders.ui)
+SET(QT_FORMS src/sliders.ui)
 
 # create moc for QT
 #QT4_WRAP_CPP(QT_MOC ${QT_HEADERS})
@@ -73,9 +66,7 @@ SET(QT_FORMS ui/sliders.ui)
 # process ui
 #QT4_WRAP_UI(QT_FORMS_HEADERS ${QT_FORMS})
 
-ADD_EXECUTABLE(viewer ${VIEWER_SOURCES} 
-    ${QT_MOC} 
-    ${QT_FORMS})
+ADD_EXECUTABLE(viewer ${VIEWER_SOURCES} ${QT_FORMS})
 
 
 TARGET_LINK_LIBRARIES(viewer Qt5::Widgets ${PCL_LIBRARIES} ${OpenCV_LIBS} ${OPENNI2_LIBRARIES})
