@@ -13,6 +13,31 @@ include_directories( ${PROJECT_SOURCE_DIR}/src )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
+# On macOS, Homebrew's VTK has an issue with JsonCpp
+# ❯ brew list --versions | rg -i 'vtk|jsoncpp'
+# jsoncpp 1.9.5
+# vtk 9.2.6
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin")
+    message("\n\nBuilding on macos\n\n")
+    execute_process(
+        COMMAND brew --prefix --installed vtk
+        RESULT_VARIABLE BREW_VTK
+        OUTPUT_VARIABLE BREW_VTK_PREFIX
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if (BREW_VTK EQUAL 0 AND EXISTS "${BREW_VTK_PREFIX}")
+        set(BREW_VTK_LIB_CMAKE ${BREW_VTK_PREFIX}/lib/cmake)
+        file(GLOB_RECURSE
+            BREW_VTK_CMAKE_LST "${BREW_VTK_LIB_CMAKE}/*/FindJsonCpp.cmake")
+        list(POP_FRONT BREW_VTK_CMAKE_LST BREW_VTK_CMAKE_DIR)
+        cmake_path(GET BREW_VTK_CMAKE_DIR PARENT_PATH BREW_JSONCPP)
+        message(STATUS "Hack: JsonCpp for VTK needs ${BREW_JSONCPP} in MODULE_PATH")
+        set(CMAKE_MODULE_PATH "${BREW_JSONCPP}"  ${CMAKE_MODULE_PATH})
+        find_package(JsonCpp REQUIRED)
+    endif()
+endif()
+
+
 # PCL required
 find_package(PCL 1.7 REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
